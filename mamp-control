@@ -26,7 +26,7 @@ function start() {
   sudo ${MAMPDIR}/startApache.sh
 
   echo -e "Starting MySql..."
-  ${MAMPDIR}/startMysql.sh
+  ${MAMPDIR}/startMysql.sh 1> /dev/null
 
 }
 
@@ -36,7 +36,7 @@ function stop() {
   sudo ${MAMPDIR}/stopApache.sh
 
   echo -e "Stopping MySql..."
-  ${MAMPDIR}/stopMysql.sh
+  ${MAMPDIR}/stopMysql.sh 1> /dev/null
 }
 
 # Restart the MAMP services
