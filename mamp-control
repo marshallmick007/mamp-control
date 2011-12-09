@@ -54,6 +54,7 @@ function status() {
   status2 "${APACHEPID}" "httpd"
 
   virtual_hosts
+  httpd_conf_status
 }
 
 # Status helper method, accepts a PIDFILE and a SERVICENAME
@@ -75,13 +76,22 @@ function status2() {
 
 # View the virtual hosts setup in Apache
 function virtual_hosts() {
-  /Applications/MAMP/Library/bin/httpd -S
+  echo -e "\nVirtual Hosts"
+  echo "============="
+  /Applications/MAMP/Library/bin/httpd -S 2>&1 | grep "namevhost" | awk '{ print $4 }'
+}
+
+function httpd_conf_status() {
+  echo -e "\nhttpd.conf Status"
+  echo "================="
+  /Applications/MAMP/Library/bin/httpd -S 2>&1 | grep "Syntax" 
 }
 
 
 # Display usage
 function usage() {
-  echo -e "[${E_PURPLE}MAMP Control v1.0${E_NC}]" 
+  echo -e "[${E_PURPLE}MAMP Control v1.0${E_NC}]"
+  echo -e "\nUsage:\n  mamp-control start|stop|restart|status" 
 }
 
 case "${ARGS}" in
