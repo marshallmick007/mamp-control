@@ -1,0 +1,98 @@
+#!/bin/bash
+
+# Name:         mamp-control
+# Created By:   Marshall 
+# Homepage:     https://github.com/marshallmick007/
+# Description:  Control your MAMP installation from the command line
+
+
+MAMPDIR=/Applications/MAMP/bin
+MYSQLPID=/Applications/MAMP/tmp/mysql/mysql.pid
+APACHEPID=/Applications/MAMP/Library/logs/httpd.pid
+
+## Used in echo -e statements
+E_PURPLE="\033[0;35m"
+E_NC="\033[0m"
+E_RED="\033[1;31m"
+E_GREEN="\033[1;32m"
+
+APACHESTATUS="http://localhost/server-status"
+
+ARGS="${1}"
+
+# Start the MAMP services
+function start() {
+  echo -e "Starting Apache..."
+  sudo ${MAMPDIR}/startApache.sh
+
+  echo -e "Starting MySql..."
+  ${MAMPDIR}/startMysql.sh
+
+}
+
+# Stop the MAMP services
+function stop() {
+  echo -e "Stopping Apache..."
+  sudo ${MAMPDIR}/stopApache.sh
+
+  echo -e "Stopping MySql..."
+  ${MAMPDIR}/stopMysql.sh
+}
+
+# Restart the MAMP services
+function restart() {
+  stop
+  start
+}
+
+# View MAMP service status
+function status() {
+  echo -e "MAMP Status"
+  echo -e "==========="
+
+  status2 "${MYSQLPID}" "mysql"
+  status2 "${APACHEPID}" "httpd"
+
+  virtual_hosts
+}
+
+# Status helper method, accepts a PIDFILE and a SERVICENAME
+function status2() {
+  pidfile="$1"
+  service="$2"
+  if [ -e "${pidfile}" ]; then
+    PID=`cat "${pidfile}"`
+    running=`ps axww | grep -v "grep" | grep "${service}" | grep -c "${PID}"`
+    if [ "1" == "${running}" ]; then
+      echo -e "${service} is ${E_GREEN}running${E_NC}"
+    else
+      echo -e "${service} is ${E_RED}Stopped${E_NC} - PID file present, but no process found"
+    fi
+  else
+     echo -e "${service} is ${E_RED}Stopped${E_NC}";
+  fi
+}
+
+# View the virtual hosts setup in Apache
+function virtual_hosts() {
+  /Applications/MAMP/Library/bin/httpd -S
+}
+
+
+# Display usage
+function usage() {
+  echo -e "[${E_PURPLE}MAMP Control v1.0${E_NC}]" 
+}
+
+case "${ARGS}" in
+  start)
+    start;;
+  stop)
+    stop;;
+  restart)
+    restart;;
+  status)
+    status;;
+  *)
+    usage;;
+esac
