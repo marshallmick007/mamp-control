@@ -30,6 +30,7 @@ minimize. mamp-control lets you start or stop MAMP from the Terminal
 
 - Implement PHP switching
 - Some utility methods to manage Apache virtual hosts
+- Match virtual host up with document root directory
 - [Pow](http://pow.cx) support
 
 
