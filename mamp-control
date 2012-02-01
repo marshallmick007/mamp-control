@@ -47,14 +47,14 @@ function restart() {
 
 # View MAMP service status
 function status() {
-  echo -e "MAMP Status"
-  echo -e "==========="
+  virtual_hosts
+  pow_hosts
+  httpd_conf_status
 
+  echo -e "\nMAMP Status"
+  echo -e "==========="
   status2 "${MYSQLPID}" "mysql"
   status2 "${APACHEPID}" "httpd"
-
-  virtual_hosts
-  httpd_conf_status
 }
 
 # Status helper method, accepts a PIDFILE and a SERVICENAME
@@ -81,6 +81,15 @@ function virtual_hosts() {
   /Applications/MAMP/Library/bin/httpd -S 2>&1 | grep "namevhost" | awk '{ print $4 }'
 }
 
+function pow_hosts {
+  echo -e "\nPOW Hosts"
+  echo "========="
+  dirlist=$(find ~/.pow/* -type l)
+  for l in $dirlist; do
+    echo `basename ${l}`".dev -> "`readlink ${l}`
+  done
+}
+
 function httpd_conf_status() {
   echo -e "\nhttpd.conf Status"
   echo "================="
@@ -103,6 +112,8 @@ case "${ARGS}" in
     restart;;
   status)
     status;;
+  pow)
+    pow_hosts;;
   *)
     usage;;
 esac
