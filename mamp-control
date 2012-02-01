@@ -9,8 +9,8 @@
 MAMPDIR=/Applications/MAMP/bin
 MYSQLPID=/Applications/MAMP/tmp/mysql/mysql.pid
 APACHEPID=/Applications/MAMP/Library/logs/httpd.pid
-MONGODBPID=/Users/marshall/.mongodb/mongodb.pid
-MONGODBCONF=/Users/marshall/.mongodb/mongod.conf
+MONGODBPID=${HOME}/.mongodb/mongodb.pid
+MONGODBCONF=${HOME}/.mongodb/mongod.conf
 
 ## Used in echo -e statements
 E_PURPLE="\033[0;35m"
@@ -111,7 +111,7 @@ function mongo_stop() {
 # Display usage
 function usage() {
   echo -e "[${E_PURPLE}MAMP Control v1.0${E_NC}]"
-  echo -e "\nUsage:\n  mamp-control start|stop|restart|status|start-mongo|stop-mongo" 
+  echo -e "\nUsage:\n  mamp-control start|stop|restart|status|mongo-start|mongo-stop" 
 }
 
 case "${ARGS}" in
@@ -123,9 +123,9 @@ case "${ARGS}" in
     restart;;
   status)
     status;;
-  start-mongo)
+  mongo-start)
     mongo_start;;
-  stop-mongo)
+  mongo-stop)
     mongo_stop;;
   *)
     usage;;
