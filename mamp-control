@@ -9,6 +9,8 @@
 MAMPDIR=/Applications/MAMP/bin
 MYSQLPID=/Applications/MAMP/tmp/mysql/mysql.pid
 APACHEPID=/Applications/MAMP/Library/logs/httpd.pid
+MONGODBPID=/Users/marshall/.mongodb/mongodb.pid
+MONGODBCONF=/Users/marshall/.mongodb/mongod.conf
 
 ## Used in echo -e statements
 E_PURPLE="\033[0;35m"
@@ -55,6 +57,7 @@ function status() {
   echo -e "==========="
   status2 "${MYSQLPID}" "mysql"
   status2 "${APACHEPID}" "httpd"
+  status2 "${MONGODBPID}" "mongod"
 }
 
 # Status helper method, accepts a PIDFILE and a SERVICENAME
@@ -96,11 +99,19 @@ function httpd_conf_status() {
   /Applications/MAMP/Library/bin/httpd -S 2>&1 | grep "Syntax" 
 }
 
+function mongo_start() {
+  mongod --fork -f ${MONGODBCONF}
+}
+
+function mongo_stop() {
+  mongo localhost/admin --eval "db.shutdownServer();"
+}
+
 
 # Display usage
 function usage() {
   echo -e "[${E_PURPLE}MAMP Control v1.0${E_NC}]"
-  echo -e "\nUsage:\n  mamp-control start|stop|restart|status" 
+  echo -e "\nUsage:\n  mamp-control start|stop|restart|status|start-mongo|stop-mongo" 
 }
 
 case "${ARGS}" in
@@ -112,8 +123,10 @@ case "${ARGS}" in
     restart;;
   status)
     status;;
-  pow)
-    pow_hosts;;
+  start-mongo)
+    mongo_start;;
+  stop-mongo)
+    mongo_stop;;
   *)
     usage;;
 esac
